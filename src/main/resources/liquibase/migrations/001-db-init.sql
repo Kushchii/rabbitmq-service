@@ -1,3 +1,3 @@
-CREATE TABLE primary_transactions
+CREATE TABLE transactions
 (
 )

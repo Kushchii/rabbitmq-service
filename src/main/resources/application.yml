@@ -1,10 +1,4 @@
 spring:
-  cloud:
-    gcp:
-      trace:
-        enabled: false
-      logging:
-        enabled: false
   application:
     name: transaction_service
   data:
@@ -12,14 +6,6 @@ spring:
       repositories:
         enabled: true
   r2dbc:
-    initialisation-mode: always
-    pool:
-      enabled: true
-      initial-size: 5
-      max-idle-time: 1m
-      max-size: 5
-      max-create-connection-time: 10s
-      max-acquire-time: 10s
     url: r2dbc:postgresql://localhost:5432/transactions
     username: root
     password: password
@@ -30,10 +16,7 @@ spring:
     password: ${spring.r2dbc.password}
   datasource:
     hikari:
-      connection-timeout: 10_000 # 10 sec
-  thymeleaf:
-    reactive:
-      max-chunk-size: 8192
+      connection-timeout: 10000 # 10 sec
   jackson:
     deserialization:
       fail-on-unknown-properties: false
