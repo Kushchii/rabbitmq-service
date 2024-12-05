@@ -1,11 +1,30 @@
 version: '3.8'
 
 services:
-  postgres:
+  postgres_1:
     image: postgres
     environment:
-      POSTGRES_DB: transactions
+      POSTGRES_DB: transaction_service
       POSTGRES_USER: root
       POSTGRES_PASSWORD: password
     ports:
       - "5432:5432"
+    volumes:
+      - postgres_1_data:/var/lib/postgresql/data
+
+  postgres_2:
+    image: postgres
+    environment:
+      POSTGRES_DB: mail_service
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: password
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_2_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_1_data:
+  postgres_2_data:
+
+
