@@ -1,1 +1,3 @@
-rootProject.name = 'transaction-service'
+rootProject.name = 'rabbitmq-service'
+include 'transaction-service'
+include 'mail-service'
