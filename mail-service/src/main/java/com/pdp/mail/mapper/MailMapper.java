@@ -9,7 +9,6 @@ public class MailMapper {
 
     public MailsEntity toEntity(MailRequest request) {
         var mail = new MailsEntity();
-        mail.setId(request.getId());
         mail.setEmail(request.getEmail());
         mail.setUserId(request.getUserId());
 

@@ -5,6 +5,11 @@ spring:
     r2dbc:
       repositories:
         enabled: true
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
   r2dbc:
     url: r2dbc:postgresql://localhost:5433/mail_service
     username: root
