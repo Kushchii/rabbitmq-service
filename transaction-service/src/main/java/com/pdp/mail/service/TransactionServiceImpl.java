@@ -19,12 +19,16 @@ public class TransactionServiceImpl implements TransactionService {
 
     private final TransactionMessageProducer transactionMessageProducer;
 
+    private static final String TRANSACTION_SUCCESS = "SUCCESS";
+
     @Override
     public Mono<TransactionsResponse> transactions(TransactionsRequest request) {
         var entity = transactionMapper.toEntity(request);
         log.info("Transaction Entity created: {}", entity);
 
-        transactionMessageProducer.sendTransaction(entity.getId(), new TransactionPayload(entity.getId(), entity.getStatus(), entity.getUserId()));
+        if (entity.getStatus().equalsIgnoreCase(TRANSACTION_SUCCESS)) {
+            transactionMessageProducer.sendTransaction(entity.getId(), new TransactionPayload(entity.getId(), entity.getStatus(), entity.getUserId()));
+        }
 
         return Mono.just(new TransactionsResponse("Transaction processed successfully"));
     }
