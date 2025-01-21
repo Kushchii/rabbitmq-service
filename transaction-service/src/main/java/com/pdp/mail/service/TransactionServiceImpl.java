@@ -3,6 +3,7 @@ package com.pdp.mail.service;
 import com.pdp.mail.api.request.TransactionsRequest;
 import com.pdp.mail.api.response.TransactionsResponse;
 import com.pdp.mail.mapper.TransactionMapper;
+import com.pdp.mail.persistent.repository.TransactionRepository;
 import com.pdp.mail.service.rabbitmq.TransactionMessageProducer;
 import com.pdp.mail.service.rabbitmq.dto.TransactionPayload;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +20,8 @@ public class TransactionServiceImpl implements TransactionService {
 
     private final TransactionMessageProducer transactionMessageProducer;
 
+    private final TransactionRepository transactionRepository;
+
     private static final String TRANSACTION_SUCCESS = "SUCCESS";
 
     @Override
@@ -26,10 +29,17 @@ public class TransactionServiceImpl implements TransactionService {
         var entity = transactionMapper.toEntity(request);
         log.info("Transaction Entity created: {}", entity);
 
-        if (entity.getStatus().equalsIgnoreCase(TRANSACTION_SUCCESS)) {
-            transactionMessageProducer.sendTransaction(entity.getId(), new TransactionPayload(entity.getId(), entity.getStatus(), entity.getUserId()));
-        }
-
-        return Mono.just(new TransactionsResponse("Transaction processed successfully"));
+        return transactionRepository.save(entity)
+                .doOnSuccess(savedEntity -> {
+                    if (TRANSACTION_SUCCESS.equalsIgnoreCase(savedEntity.getStatus())) {
+                        TransactionPayload payload = new TransactionPayload(
+                                savedEntity.getTransactionId(),
+                                savedEntity.getStatus(),
+                                savedEntity.getUserId()
+                        );
+                        transactionMessageProducer.sendTransaction(savedEntity.getTransactionId(), payload);
+                    }
+                })
+                .thenReturn(new TransactionsResponse("Transaction processed successfully"));
     }
 }

@@ -1,11 +1,16 @@
 package com.pdp.mail.api.response;
 
-import lombok.AllArgsConstructor;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
 @Data
-@AllArgsConstructor
 public class MailResponse {
 
     private String message;
+
+    @JsonCreator
+    public MailResponse(@JsonProperty("message") String message) {
+        this.message = message;
+    }
 }
