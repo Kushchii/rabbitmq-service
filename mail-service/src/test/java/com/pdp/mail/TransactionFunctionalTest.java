@@ -1,3 +1,5 @@
+package com.pdp.mail;
+
 import com.pdp.mail.api.request.MailRequest;
 import com.pdp.mail.api.response.MailResponse;
 import org.junit.jupiter.api.DisplayName;

@@ -1,5 +1,7 @@
-import com.pdp.mail.MailApplication;
-import com.pdp.mail.persistent.repository.MailsRepository;
+package com.pdp.transaction;
+
+import com.pdp.mail.TransactionApplication;
+import com.pdp.mail.persistent.repository.TransactionRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +16,7 @@ import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.PostgreSQLContainer;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
-        classes = {MailApplication.class},
+        classes = {TransactionApplication.class},
         properties = "spring.main.allow-bean-definition-overriding=true")
 @DirtiesContext
 @AutoConfigureWebTestClient(timeout = "PT10M")
@@ -27,7 +29,7 @@ public abstract class BaseFunctionalTest {
     private static final PostgreSQLContainer PSQL_CONTAINER = (PostgreSQLContainer) new PostgreSQLContainer("postgres:latest")
             .withUsername("root")
             .withPassword("password")
-            .withDatabaseName("mail_service")
+            .withDatabaseName("transactionService")
             .withExposedPorts(5432);
 
     private static final GenericContainer RABBIT_CONTAINER = new GenericContainer("rabbitmq:3-management").withExposedPorts(5672);
@@ -36,7 +38,7 @@ public abstract class BaseFunctionalTest {
     protected WebTestClient client;
 
     @Autowired
-    protected MailsRepository mailsRepository;
+    protected TransactionRepository transactionRepository;
 
     @DynamicPropertySource
     protected static void registerMockServer(DynamicPropertyRegistry registry) {
@@ -53,7 +55,7 @@ public abstract class BaseFunctionalTest {
 
     @BeforeEach
     void setup() {
-        mailsRepository.deleteAll().block();
+        transactionRepository.deleteAll().block();
     }
 
     protected <T, R> R doPost(String uri, T request, Class<R> returnType) {
